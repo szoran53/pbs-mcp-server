@@ -1,0 +1,33 @@
+{
+  "name": "pbs-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for Proxmox Backup Server management — datastores, snapshots, verification, prune, GC, sync jobs, and more.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "pbs-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "mcp",
+    "proxmox",
+    "pbs",
+    "backup",
+    "model-context-protocol"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^4.21.2",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}

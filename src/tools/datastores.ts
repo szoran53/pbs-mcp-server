@@ -51,7 +51,7 @@ Returns:
           "/config/datastore"
         );
         if (!stores.length) {
-          return { content: [{ type: "text", text: "No datastores configured." }] };
+          return { content: [{ type: "text", text: "No datastores found. If datastores exist, the token may lack Sys.Audit privilege (required to list all datastores)." }] };
         }
         const lines = [`## PBS Datastores (${stores.length})`, ""];
         for (const s of stores) {

@@ -181,7 +181,7 @@ Returns:
     async (params) => {
       try {
         const upid = await client.post<string>(
-          `/config/sync/${encodeURIComponent(params.id)}/run`
+          `/admin/sync/${encodeURIComponent(params.id)}/run`
         );
         return {
           content: [{ type: "text", text: `Sync job "${params.id}" started. UPID: ${upid}` }],

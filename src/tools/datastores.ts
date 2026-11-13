@@ -555,7 +555,7 @@ Args:
   - store (string): Datastore name
   - backup_type (string): "vm", "ct", or "host"
   - backup_id (string): Backup ID
-  - backup_time (string): Backup timestamp in ISO format (e.g. "2025-03-22T04:00:00Z")
+  - backup_time (string): Backup timestamp, ISO 8601 (e.g. "2025-03-22T04:00:00Z") or Unix epoch seconds (e.g. "1742616000")
   - protected (boolean): true to protect, false to unprotect
   - ns (string, optional): Namespace path
 
@@ -565,7 +565,7 @@ Returns:
         store: z.string().min(1).describe("Datastore name"),
         backup_type: z.enum(["vm", "ct", "host"]).describe("Backup type"),
         backup_id: z.string().min(1).describe("Backup ID"),
-        backup_time: z.string().min(1).describe("Backup timestamp in ISO format"),
+        backup_time: z.string().min(1).describe("Backup timestamp, ISO 8601 or Unix epoch seconds"),
         protected: z.boolean().describe("true to protect, false to unprotect"),
         ns: z.string().optional().describe("Namespace path"),
       },
@@ -578,10 +578,25 @@ Returns:
     },
     async (params) => {
       try {
+        // PBS expects backup-time as an integer (Unix epoch seconds).
+        const backupTime = /^\d+$/.test(params.backup_time)
+          ? parseInt(params.backup_time, 10)
+          : Math.floor(Date.parse(params.backup_time) / 1000);
+        if (!Number.isFinite(backupTime)) {
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: `Error: invalid backup_time "${params.backup_time}" (use ISO 8601 or Unix epoch seconds)`,
+              },
+            ],
+          };
+        }
         const body: Record<string, unknown> = {
           "backup-type": params.backup_type,
           "backup-id": params.backup_id,
-          "backup-time": params.backup_time,
+          "backup-time": backupTime,
           protected: params.protected,
         };
         if (params.ns) body.ns = params.ns;
